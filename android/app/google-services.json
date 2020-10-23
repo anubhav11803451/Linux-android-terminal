@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1078259312104",
+    "firebase_url": "https://automated-linux-terminal.firebaseio.com",
+    "project_id": "automated-linux-terminal",
+    "storage_bucket": "automated-linux-terminal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1078259312104:android:e441b8df3d4c709299705d",
+        "android_client_info": {
+          "package_name": "com.wanderforce.automatedlinuxterminal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1078259312104-cg4ebtbhl9doa4s483elutihabcgmuld.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZLDh_MbRqc3w3VNG3Da5KTVhPP_nWOmQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1078259312104-cg4ebtbhl9doa4s483elutihabcgmuld.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
