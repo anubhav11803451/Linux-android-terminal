@@ -1,0 +1,69 @@
+<--------------------FIREBASE INSTALLATION USING PYTHON IN LINUX------------------------------------------------->
+
+https://cloud.google.com/firestore/docs/quickstart-servers#python
+
+https://cloud.google.com/community/tutorials/building-flask-api-with-cloud-firestore-and-deploying-to-cloud-run
+
+- pip install requests
+- pip install python-firebase
+- open firebase and create a new project
+
+Go to database-> create database-> test mode-> next-> done
+
+we'll be using realtime database.
+
+	from firebase import firebase
+	firebase = firebase.FirebaseApplication("url of database", None)
+
+// copy url of database from realtime database you just created in firebase. Since we are doing it in the test mode so we'll give 'None' along with database-url  
+
+	data = { 'Name': 'Apoorva Agrawal',
+		'Email': '',
+		'Phone': }
+
+	result = firebase.post(/database/tablename, data)
+	print(result)
+// database is the name of the database you created
+//tablename will be the name you're entering and it'll get created itself and will store data in it.
+-> if error pops in then go to "rules" in firebase database -> change 'read' and 'write' to true and then click 'publish'
+
+
+<-----------------Fetching data from firebase----- --------------------->
+	from firebase import firebase
+	firebase = firebase.FirebaseApplication("url of 		database", None)
+
+	result = firebase.get(databaseTableName)
+	print(result)
+
+<-----------------Updating data from firebase----- --------------------->
+	from firebase import firebase
+	firebase = firebase.FirebaseApplication("url of 				database", None)
+
+	firebase.put(tablename/dataname, 'Name', 'Bob')
+	print(Record updated)
+
+// this will change 'Name' of the data to 'Bob'
+
+
+// In the / drive, we have 'var' folder -> www -> cgi-bin
+
+		#gedit filename
+
+	#!/usr/bin/python3
+print("content-type: text/html")
+print()
+import subprocess as sp
+import cgi
+
+
+
+ -------------------------------------------------------------
+|
+|			{
+  "rules": {
+    ".read": "now < 1606847400000",  // 2020-12-2
+    ".write": "now < 1606847400000",  // 2020-12-2
+  }
+}
+|
+|_____________________________________________________________

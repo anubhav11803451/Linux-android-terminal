@@ -1,3 +1,5 @@
+import 'package:automatedlinuxterminal/linux_terminal.dart';
+import 'package:automatedlinuxterminal/terminal.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -48,38 +50,77 @@ class _LoginPageState extends State<LoginPage> {
               email: _email, password: _password);
           User user = result.user;
 
-          print('Signed in: ${user.uid}');
+          print('Signed in: ${user}');
           print('******* USER DETAILS: $user');
 
-          // if (user != null) {
-          //   Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //           builder: (ctx) => ChatRoom(
-          //                 user: user,
-          //               )));
-          // }
+          // Query docRef =
+          //     fireStore.collection("users").where("email", isEqualTo: _email);
+
+          DocumentReference docRef = fireStore.collection("users").doc();
+          DocumentSnapshot docSnap = await docRef.get();
+          var doc_id2 = docSnap.reference.documentID;
+
+          print("DOCUMENT REFERENCE: $docRef");
+          final uid = user.uid;
+          print("ID: $doc_id2");
+
+          if (user != null) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (ctx) => MyCLI2(
+                          user: user,
+                          //clientID: client,
+                        )));
+          }
         } else {
           dynamic result = await _auth.createUserWithEmailAndPassword(
               email: _email, password: _password);
           User user = result.user;
-          fireStore.collection("users").add({
+//----------------------------------------------------------->
+//                  Adding collection "users"
+//----------------------------------------------------------->
+          DocumentReference docRef = fireStore.collection("users").doc();
+
+          var docID = docRef.id;
+
+          docRef.set({
             "name": _name,
             "email": _email,
-            //"contact": _contact,
+            "docRefID": docID,
           }).then((value) => null);
+          print('document ID: $docID');
 
-          print('Registered user: ${user.uid}');
+//----------------------------------------------------------->
+//                  Adding collection "clients"
+//----------------------------------------------------------->
+
+          DocumentReference client = fireStore
+              .collection("users")
+              .doc(docRef.id)
+              .collection("clients")
+              .doc();
+          client.set({
+            "IP": "192.168.31.200",
+            "deviceName": "Redmi Note 8 pro",
+          });
+
+          print('Client ID: ${client.id}');
+
+          print('Registered user: ${user}');
           userID = user.uid;
 
-          // if (user != null) {
-          //   Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //           builder: (ctx) => ChatRoom(
-          //                 user: user,
-          //               )));
-          // }
+          if (user != null) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (ctx) => MyCLI2(
+                          user: user,
+                          clientID: client,
+                          userDocID: docRef,
+                        )));
+          }
+          return docID;
         }
       } catch (e) {
         print('****Error*****: $e');
