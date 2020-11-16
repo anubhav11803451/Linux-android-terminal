@@ -108,8 +108,28 @@ class _MyCLI2State extends State<MyCLI2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          sendToWeb();
+          getOutput();
+
+          if (cmd != null) {
+            history.add(cmd);
+            setState(() {
+              count++;
+            });
+
+            cmd = null;
+            print(history);
+          }
+        },
+        child: Icon(Icons.play_arrow),
+        backgroundColor: Colors.indigo[800],
+      ),
       body: Container(
+        height: MediaQuery.of(context).size.height,
         color: Colors.white,
         child: Column(
           children: [
@@ -122,47 +142,48 @@ class _MyCLI2State extends State<MyCLI2> {
                     height: 300,
                     width: double.infinity,
                     color: HexColor("#011627"),
-                    child: Flexible(
-                        child: Column(
+                    child: Column(
                       children: [
-                        new ListView.builder(
-                            itemCount: history.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return new Row(
-                                children: [
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Text(
-                                    "Bash \$ ",
-                                    style: TextStyle(
-                                      color: Colors.red[400],
+                        Expanded(
+                          child: new ListView.builder(
+                              itemCount: history.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return new Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 20,
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  if (history.length - index == 1)
-                                    Flexible(
-                                      child: TextField(
-                                        controller: _textController,
-                                        onChanged: (value) {
-                                          cmd = value;
-                                        },
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
+                                    Text(
+                                      "Bash \$ ",
+                                      style: TextStyle(
+                                        color: Colors.red[400],
                                       ),
-                                    )
-                                  else
-                                    Flexible(
-                                        child: Text(
-                                      history[index + 1],
-                                      style: TextStyle(color: Colors.white),
-                                    )),
-                                ],
-                              );
-                            }),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    if (history.length - index == 1)
+                                      Flexible(
+                                        child: TextField(
+                                          controller: _textController,
+                                          onChanged: (value) {
+                                            cmd = value;
+                                          },
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      )
+                                    else
+                                      Flexible(
+                                          child: Text(
+                                        history[index + 1],
+                                        style: TextStyle(color: Colors.white),
+                                      )),
+                                  ],
+                                );
+                              }),
+                        ),
                         Row(
                           children: [
                             Text(
@@ -173,14 +194,14 @@ class _MyCLI2State extends State<MyCLI2> {
                           ],
                         )
                       ],
-                    )),
+                    ),
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       SizedBox(
-                        height: 320,
+                        height: 300,
                       ),
                       Stack(
                         alignment: AlignmentDirectional.bottomCenter,
@@ -198,14 +219,14 @@ class _MyCLI2State extends State<MyCLI2> {
                           Positioned(
                               left: 50,
                               right: 50,
-                              top: 100,
+                              top: 45,
                               child: Container(
                                 height: 150,
                                 width: 250,
                                 color: Colors.amber,
                               )),
                           Container(
-                            height: 400,
+                            height: 200,
                             width: double.infinity,
                             //color: Colors.red,
                             child: SizedBox.expand(
@@ -238,37 +259,8 @@ class _MyCLI2State extends State<MyCLI2> {
                           ),
                         ],
                       ),
-                      // SizedBox(
-                      //   height: 140,
-                      // ),
                     ],
                   ),
-                  Positioned(
-                    top: 270,
-                    left: 300,
-                    height: 70,
-                    width: 70,
-                    //bottom: 300,
-
-                    child: FloatingActionButton(
-                      onPressed: () {
-                        sendToWeb();
-                        getOutput();
-
-                        if (cmd != null) {
-                          history.add(cmd);
-                          setState(() {
-                            count++;
-                          });
-
-                          cmd = null;
-                          print(history);
-                        }
-                      },
-                      child: Icon(Icons.play_arrow),
-                      backgroundColor: Colors.indigo[800],
-                    ),
-                  )
                 ])
           ],
         ),
