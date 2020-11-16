@@ -1,4 +1,3 @@
-import 'package:automatedlinuxterminal/linux_terminal.dart';
 import 'package:automatedlinuxterminal/terminal.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -50,19 +49,14 @@ class _LoginPageState extends State<LoginPage> {
               email: _email, password: _password);
           User user = result.user;
 
-          print('Signed in: ${user}');
+          print('Signed in: $user');
           print('******* USER DETAILS: $user');
 
-          // Query docRef =
-          //     fireStore.collection("users").where("email", isEqualTo: _email);
+//--------------------------------------------------------------------------->
+//                          Getting Device Name
+//--------------------------------------------------------------------------->
 
-          DocumentReference docRef = fireStore.collection("users").doc();
-          DocumentSnapshot docSnap = await docRef.get();
-          var doc_id2 = docSnap.reference.documentID;
-
-          print("DOCUMENT REFERENCE: $docRef");
-          final uid = user.uid;
-          print("ID: $doc_id2");
+          //DocumentReference docRef = fireStore.collection("users").doc(_email).collection("clients").doc();
 
           if (user != null) {
             Navigator.push(
@@ -71,6 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                     builder: (ctx) => MyCLI2(
                           user: user,
                           //clientID: client,
+                          userDocID: _email,
                         )));
           }
         } else {
@@ -80,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
 //----------------------------------------------------------->
 //                  Adding collection "users"
 //----------------------------------------------------------->
-          DocumentReference docRef = fireStore.collection("users").doc();
+          DocumentReference docRef = fireStore.collection("users").doc(_email);
 
           var docID = docRef.id;
 
@@ -107,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
 
           print('Client ID: ${client.id}');
 
-          print('Registered user: ${user}');
+          print('Registered user: $user');
           userID = user.uid;
 
           if (user != null) {
@@ -117,10 +112,9 @@ class _LoginPageState extends State<LoginPage> {
                     builder: (ctx) => MyCLI2(
                           user: user,
                           clientID: client,
-                          userDocID: docRef,
+                          userDocID: _email,
                         )));
           }
-          return docID;
         }
       } catch (e) {
         print('****Error*****: $e');

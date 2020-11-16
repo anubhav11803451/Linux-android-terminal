@@ -51,9 +51,8 @@ class _MyCLI2State extends State<MyCLI2> {
   @override
   initState() {
     count = 0;
+    super.initState();
   }
-
-  //Future<void> getOutput() {}
 
   Future<void> sendToWeb() async {
     DocumentReference reference = FirebaseFirestore.instance
@@ -69,8 +68,41 @@ class _MyCLI2State extends State<MyCLI2> {
       'output': "",
       //'clientID': widget.clientID.toString(),
       'clientID': "XYZ123",
+      'timestamp': "",
     });
     print("Send to Web: Complete");
+  }
+
+  Future getOutput() async {
+    // StreamBuilder<QuerySnapshot>(
+    //   stream: fireStore
+    //       .collection("users")
+    //       .doc(widget.userDocID)
+    //       .collection("commands")
+    //       .snapshots(),
+    //   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+    //     if (!snapshot.hasData)
+    //       return new Text('Loading...');
+    //     else
+    //       return new ListView.builder(
+    //         // children: [
+    //         //   snapshot.data.documents.map((DocumentSnapshot document){}),
+    //         // ],
+    //       );
+    //   },
+    // );
+
+    var userQuery = fireStore
+        .collection("users")
+        .doc(widget.userDocID)
+        .collection("commands")
+        .where('output', isEqualTo: "")
+        .limit(1);
+    await userQuery.get().then((data) {
+      data.docChanges.forEach((change) {
+        print('documentChanges ${change.doc.data}');
+      });
+    });
   }
 
   @override
@@ -91,7 +123,9 @@ class _MyCLI2State extends State<MyCLI2> {
                     width: double.infinity,
                     color: HexColor("#011627"),
                     child: Flexible(
-                        child: new ListView.builder(
+                        child: Column(
+                      children: [
+                        new ListView.builder(
                             itemCount: history.length,
                             itemBuilder: (BuildContext context, int index) {
                               return new Row(
@@ -108,20 +142,38 @@ class _MyCLI2State extends State<MyCLI2> {
                                   SizedBox(
                                     width: 10,
                                   ),
-                                  Flexible(
-                                    child: TextField(
-                                      controller: _textController,
-                                      onChanged: (value) {
-                                        cmd = value;
-                                      },
-                                      style: TextStyle(
-                                        color: Colors.white,
+                                  if (history.length - index == 1)
+                                    Flexible(
+                                      child: TextField(
+                                        controller: _textController,
+                                        onChanged: (value) {
+                                          cmd = value;
+                                        },
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    ),
-                                  )
+                                    )
+                                  else
+                                    Flexible(
+                                        child: Text(
+                                      history[index + 1],
+                                      style: TextStyle(color: Colors.white),
+                                    )),
                                 ],
                               );
-                            })),
+                            }),
+                        Row(
+                          children: [
+                            Text(
+                              "output: ",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            Text(output != null ? output : "..."),
+                          ],
+                        )
+                      ],
+                    )),
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -192,33 +244,31 @@ class _MyCLI2State extends State<MyCLI2> {
                     ],
                   ),
                   Positioned(
-                      top: 270,
-                      left: 300,
-                      height: 70,
-                      width: 70,
-                      //bottom: 300,
-                      child: GestureDetector(
-                        onTap: () {
-                          // sendToWeb();
-                          // if (cmd != null) {
-                          //   history.add(cmd);
-                          //   setState() {
-                          //     count++;
-                          //   }
+                    top: 270,
+                    left: 300,
+                    height: 70,
+                    width: 70,
+                    //bottom: 300,
 
-                          //   cmd = null;
-                          //   print(history);
-                          // }
-                        },
-                        child: FloatingActionButton(
-                          onPressed: () {
-                            //print("COMMAND: $cmd");
-                            sendToWeb();
-                          },
-                          child: Icon(Icons.play_arrow),
-                          backgroundColor: Colors.indigo[800],
-                        ),
-                      ))
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        sendToWeb();
+                        getOutput();
+
+                        if (cmd != null) {
+                          history.add(cmd);
+                          setState(() {
+                            count++;
+                          });
+
+                          cmd = null;
+                          print(history);
+                        }
+                      },
+                      child: Icon(Icons.play_arrow),
+                      backgroundColor: Colors.indigo[800],
+                    ),
+                  )
                 ])
           ],
         ),
